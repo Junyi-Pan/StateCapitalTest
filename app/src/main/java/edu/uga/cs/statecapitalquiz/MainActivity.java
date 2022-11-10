@@ -18,27 +18,23 @@ public class MainActivity extends AppCompatActivity {
     public static final String DEBUG_TAG = "MainActivity";
     private AppData appData;
     final String TAG = "CSVReading";
-    private Button beginQuiz;
-    public static final String APP_DATA = "edu.uga.cs.statecapitalsquiz.AppData";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Button start;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         appData = new AppData(this);
         appData.open();
-        appData.deleteQuestions();
+        appData.deleteQuestionsTable();
         new QuestionDBWriter().execute();
-        beginQuiz = findViewById( R.id.continueButton );
-
-        beginQuiz.setOnClickListener(new View.OnClickListener() {
-
+        start = findViewById(R.id.start);
+        start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent( v.getContext(), QuizActivity.class );
                 //intent.putExtra(APP_DATA,appData);
                 startActivity( intent );
-
             }
         });
     }
@@ -50,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
             try {
                 InputStream in_s = getAssets().open("state_capitals.csv");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in_s));
-                String csv_line = reader.readLine();
-                while((csv_line = reader.readLine()) != null) {
-                    String[] values = csv_line.split(",");
+                String line = reader.readLine();
+                while((line = reader.readLine()) != null) {
+                    String[] values = line.split(",");
                     Question newQuestion = new Question();
                     newQuestion.setState(values[0]);
                     newQuestion.setCapital(values[1]);
@@ -60,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     newQuestion.setCity2(values[3]);
 
                     allQuestions.add(newQuestion);
-                    System.out.println("NEW QUESTION: " + newQuestion.toString());
+                    //System.out.println("NEW QUESTION: " + newQuestion.toString());
                     appData.storeQuestion(newQuestion);
                 }
 

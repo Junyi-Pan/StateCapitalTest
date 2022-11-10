@@ -1,6 +1,5 @@
 package edu.uga.cs.statecapitalquiz;
 
-import java.util.List;
 import java.util.Random;
 
 import android.os.Bundle;
@@ -30,7 +29,7 @@ public class QuizActivity extends AppCompatActivity {
 
     public ArrayList<Integer> getRandomQuestions(){
 
-        ArrayList<Integer> toReturn = new ArrayList<Integer>();
+        ArrayList<Integer> toReturn = new ArrayList<>();
         Random randomGenerator = new Random();
         int randomInt = randomGenerator.nextInt(50) + 1;
         toReturn.add(randomInt);
@@ -78,9 +77,9 @@ public class QuizActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             counter ++;
-            System.out.println("before counter");
-            System.out.println("COUNTER: " + counter);
-            System.out.println("QUESTION INDEX: " + questions.get(counter));
+            //System.out.println("before counter");
+            //System.out.println("COUNTER: " + counter);
+            //System.out.println("QUESTION INDEX: " + questions.get(counter));
             return PlaceholderFragment.newInstance(position + 1, questions.get(counter));
 
         }
@@ -102,7 +101,7 @@ public class QuizActivity extends AppCompatActivity {
 
     public static class PlaceholderFragment extends Fragment {
         private AppData appData = null;
-        private ArrayList<Question> questionsList = new ArrayList<Question>();
+        private ArrayList<Question> questionsList = new ArrayList<>();
 
         private static final String ARG_SECTION_NUMBER = "section_number";
         private static final String ARG_Q = "quest";

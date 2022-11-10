@@ -9,7 +9,6 @@ import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class is facilitates storing and restoring questions and quizzes stored.
@@ -20,7 +19,7 @@ public class AppData implements Serializable {
 
     // this is a reference to our database; it is used later to run SQL commands
     private SQLiteDatabase db;
-    private SQLiteOpenHelper myDBHelper;
+    private final SQLiteOpenHelper myDBHelper;
     private static final String[] questionColumns = {
             DBHelper.QUESTIONS_COLUMN_ID,
             DBHelper.QUESTIONS_COLUMN_STATE,
@@ -140,9 +139,9 @@ public class AppData implements Serializable {
         return questions;
     }
 
-    public void deleteQuestions(){
+    public void deleteQuestionsTable(){
         db.delete(DBHelper.TABLE_QUESTIONS,null,null);
-        db.execSQL( "DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + DBHelper.TABLE_QUESTIONS + "'" );
+        db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" + DBHelper.TABLE_QUESTIONS + "'" );
     }
 
 }
