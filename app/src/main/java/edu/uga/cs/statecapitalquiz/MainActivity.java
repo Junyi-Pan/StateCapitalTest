@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 InputStream in_s = getAssets().open("state_capitals.csv");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in_s));
-                String csv_line;
+                String csv_line = reader.readLine();
                 while((csv_line = reader.readLine()) != null) {
                     String[] values = csv_line.split(",");
                     Question newQuestion = new Question();

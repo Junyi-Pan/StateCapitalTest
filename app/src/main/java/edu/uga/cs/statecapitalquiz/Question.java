@@ -24,6 +24,14 @@ public class Question {
         this.city2 = null;
     }
 
+    public Question(String state, String capital, String city1, String city2) {
+        this.id = -1;
+        this.state = state;
+        this.capital = capital;
+        this.city1 = city1;
+        this.city2 = city2;
+    }
+
     public long getId() {
         return id;
     }
