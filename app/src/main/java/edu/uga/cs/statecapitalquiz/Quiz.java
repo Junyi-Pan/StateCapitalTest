@@ -19,11 +19,11 @@ public class Quiz {
     private long score;
 
 
-    // POJO Constructor
+    // Constructor
     public Quiz(){
         this.id = -1;
         this.date = null;
-        this.q1 = 1;            //*******CHANGE TO RANDOM NUMBER 1-50*******
+        this.q1 = 1;
         this.q2 = 2;
         this.q3 = 3;
         this.q4 = 4;
