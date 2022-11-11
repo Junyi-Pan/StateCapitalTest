@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Question question) {
             // Show a quick confirmation message
-            Toast.makeText( getApplicationContext(), "Question created for " ,
-                    Toast.LENGTH_SHORT).show();
+            //Toast.makeText( getApplicationContext(), "Question created for " ,
+            //        Toast.LENGTH_SHORT).show();
 
             //Log.d( DEBUG_TAG, "Question saved: " + question );
         }

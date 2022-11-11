@@ -71,8 +71,8 @@ public class ResultActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Score score) {
             // Show a quick confirmation message
-            Toast.makeText( getApplicationContext(), "Score created for " ,
-                    Toast.LENGTH_SHORT).show();
+            //Toast.makeText( getApplicationContext(), "Score created for " ,
+            //        Toast.LENGTH_SHORT).show();
 
 
 
