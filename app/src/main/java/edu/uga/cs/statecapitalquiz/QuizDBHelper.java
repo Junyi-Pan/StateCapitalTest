@@ -81,8 +81,8 @@ public class QuizDBHelper extends SQLiteOpenHelper {
     public void onCreate( SQLiteDatabase db ) {
         db.execSQL( CREATE_QUESTIONS );
         db.execSQL( CREATE_SCORES );
-        Log.d( DEBUG_TAG, "Table " + TABLE_QUESTIONS + " created" );
-        Log.d( DEBUG_TAG, "Table " + TABLE_SCORES + " created" );
+        //Log.d( DEBUG_TAG, "Table " + TABLE_QUESTIONS + " created" );
+        //Log.d( DEBUG_TAG, "Table " + TABLE_SCORES + " created" );
 
         //end of csv transfer
     }
@@ -95,7 +95,7 @@ public class QuizDBHelper extends SQLiteOpenHelper {
         db.execSQL( "drop table if exists " + TABLE_QUESTIONS );
         db.execSQL( "drop table if exists " + TABLE_SCORES );
         onCreate( db );
-        Log.d( DEBUG_TAG, "Table " + TABLE_QUESTIONS + " upgraded" );
-        Log.d( DEBUG_TAG, "Table " + TABLE_SCORES + " upgraded" );
+        //Log.d( DEBUG_TAG, "Table " + TABLE_QUESTIONS + " upgraded" );
+        //Log.d( DEBUG_TAG, "Table " + TABLE_SCORES + " upgraded" );
     }
 }

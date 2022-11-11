@@ -18,7 +18,6 @@ public class QuizRecyclerAdapter extends RecyclerView.Adapter<QuizRecyclerAdapte
     private List<Score> scoreList;
     private QuizData score = null;
 
-    /**@param scoreList*/
     public QuizRecyclerAdapter( List<Score> scoreList ) {
         this.scoreList = scoreList;
     }
@@ -55,10 +54,10 @@ public class QuizRecyclerAdapter extends RecyclerView.Adapter<QuizRecyclerAdapte
     public void onBindViewHolder(QuizHolder holder, int position) {
         Score score = scoreList.get( position );
 
-        Log.d( DEBUG_TAG, "onBindViewHolder: " + score );
+        //Log.d( DEBUG_TAG, "onBindViewHolder: " + score );
 
-        holder.date.setText( score.getDate());
-        holder.score.setText( Integer.toString(score.getScore()) );
+        holder.date.setText(score.getDate());
+        holder.score.setText(Integer.toString(score.getScore()));
     }
 
     @Override

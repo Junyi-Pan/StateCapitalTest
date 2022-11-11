@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * This activity shows the final score.
@@ -30,8 +31,7 @@ public class ResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE, MMM d, ''yy");
-        Date date = new Date();
+        String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         setContentView(R.layout.activity_result);
         button = findViewById(R.id.button);
         button.setOnClickListener(new QuizButtonClickListener());
@@ -45,7 +45,7 @@ public class ResultActivity extends AppCompatActivity {
                 count++;
             }
         }
-        quiz = new Score(formatter.format(date), count);
+        quiz = new Score(date, count);
         scores = new QuizData(this);
         scores.open();
         textView4.setText(Integer.toString(count));
@@ -76,7 +76,7 @@ public class ResultActivity extends AppCompatActivity {
 
 
 
-            Log.d(DEBUG_TAG, "Score saved: " + score );
+            //Log.d(DEBUG_TAG, "Score saved: " + score );
         }
     }
 

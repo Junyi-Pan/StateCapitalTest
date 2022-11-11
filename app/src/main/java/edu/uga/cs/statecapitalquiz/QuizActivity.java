@@ -9,7 +9,6 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +27,10 @@ public class QuizActivity extends AppCompatActivity {
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
     ActionBar mActionBar;
-    public final static Question [] questionArr = new Question[5];
+    public final static Question [] questionArr = new Question[6];
     ArrayList<String> arrayList = new ArrayList<>();
     public static ArrayList<Integer> questionNum = new ArrayList<>();
-    public static int [] questionAnswers = new int[5];
+    public static int [] questionAnswers = new int[6];
     private QuizData quizData = null;
 
     @Override
@@ -41,7 +40,7 @@ public class QuizActivity extends AppCompatActivity {
         quizData = new QuizData( this );
         quizData.open();
         int count=0;
-        while(questionNum.size()<5){
+        while(questionNum.size()<6){
             Random randomGenerator = new Random();
             int random_int = randomGenerator.nextInt(50) + 1;
             if(!(questionNum.contains(random_int))){
@@ -53,7 +52,7 @@ public class QuizActivity extends AppCompatActivity {
         }
 
         mActionBar = getSupportActionBar();
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), 5);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), 6);
         mActionBar.setTitle(mSectionsPagerAdapter.getPageTitle(0));
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -104,9 +103,8 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     public void loadView(TextView questions, int question ,RadioGroup radioGroup) {
-        //int random_int = (int)Math.floor(Math.random()*(49-1+1)+1);
         checkAnswers(questions,question ,radioGroup);
-        ArrayList<String> arrayList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add(questionArr[question].getCapital());
         arrayList.add(questionArr[question].getCity2());
         arrayList.add(questionArr[question].getCity3());
@@ -208,8 +206,6 @@ public class QuizActivity extends AppCompatActivity {
                                 startActivity(reg);
                             }
 
-
-                        } else {
 
                         }
                     }

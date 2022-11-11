@@ -40,14 +40,14 @@ public class QuizData {
     // Opens the database
     public void open() {
         db = QuizDbHelper.getWritableDatabase();
-        Log.d( DEBUG_TAG, "QuizData: db open" );
+        //Log.d( DEBUG_TAG, "QuizData: db open" );
     }
 
     // Close the database
     public void close() {
         if( QuizDbHelper != null ) {
             QuizDbHelper.close();
-            Log.d(DEBUG_TAG, "QuizData: db closed");
+            //Log.d(DEBUG_TAG, "QuizData: db closed");
         }
     }
     // This is how we restore persistent objects stored as rows in the questions table in the database.
@@ -85,19 +85,19 @@ public class QuizData {
                         question.setId(id); // set the id (the primary key) of this object
                         // add it to the list
                         questionList.add(question);
-                        Log.d(DEBUG_TAG, "Retrieved question: " + question);
+                        //Log.d(DEBUG_TAG, "Retrieved question: " + question);
                     }
                 }
             }
             if (cursor != null) {
-                Log.d(DEBUG_TAG, "Number of records from DB: " + cursor.getCount());
+                //Log.d(DEBUG_TAG, "Number of records from DB: " + cursor.getCount());
             }
             else {
-                Log.d(DEBUG_TAG, "Number of records from DB: 0");
+                //Log.d(DEBUG_TAG, "Number of records from DB: 0");
             }
         }
         catch( Exception e ){
-            Log.d( DEBUG_TAG, "Exception caught: " + e );
+            //Log.d( DEBUG_TAG, "Exception caught: " + e );
         }
         finally{
             // we should close the cursor
@@ -130,7 +130,7 @@ public class QuizData {
         // store the id (the primary key) in the Question instance, as it is now persistent
         question.setId(id);
 
-        Log.d( DEBUG_TAG, "Stored new Question with id: " + String.valueOf(question.getId()));
+        //Log.d( DEBUG_TAG, "Stored new Question with id: " + String.valueOf(question.getId()));
 
         return question;
     }
@@ -166,19 +166,19 @@ public class QuizData {
                         score.setId(id); // set the id (the primary key) of this object
                         // add it to the list
                         scoreList.add(score);
-                        Log.d(DEBUG_TAG, "Retrieved Score: " + score);
+                        //Log.d(DEBUG_TAG, "Retrieved Score: " + score);
                     }
                 }
             }
             if (cursor != null) {
-                Log.d(DEBUG_TAG, "Number of records from DB: " + cursor.getCount());
+                //Log.d(DEBUG_TAG, "Number of records from DB: " + cursor.getCount());
             }
             else {
-                Log.d(DEBUG_TAG, "Number of records from DB: 0");
+                //Log.d(DEBUG_TAG, "Number of records from DB: 0");
             }
         }
         catch( Exception e ){
-            Log.d( DEBUG_TAG, "Exception caught: " + e );
+            //Log.d( DEBUG_TAG, "Exception caught: " + e );
         }
         finally{
             // we should close the cursor
@@ -208,7 +208,7 @@ public class QuizData {
 
         // store the id (the primary key) in the Score instance, as it is now persistent
         score.setId(id);
-        Log.d(DEBUG_TAG, "Stored new score with id: " + String.valueOf(score.getId()));
+        //Log.d(DEBUG_TAG, "Stored new score with id: " + String.valueOf(score.getId()));
 
         return score;
 

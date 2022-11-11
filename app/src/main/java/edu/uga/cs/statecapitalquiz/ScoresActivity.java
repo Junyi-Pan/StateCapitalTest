@@ -53,7 +53,7 @@ public class ScoresActivity extends AppCompatActivity {
             quizData.open();
             scoreList = quizData.retrieveAllScores();
 
-            Log.d(DEBUG_TAG, "QuizDBReaderTask: Scores retrieved: " + scoreList.size() );
+            //Log.d(DEBUG_TAG, "QuizDBReaderTask: Scores retrieved: " + scoreList.size() );
 
             return scoreList;
         }

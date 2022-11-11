@@ -51,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
                 while((nextLine = reader.readNext()) != null ) {
                     Question row = new Question(nextLine[0],nextLine[1], nextLine[2], nextLine[3]);
                     new QuestionDBWriter().execute(row);
-                    Log.e(TAG, nextLine[0]);
+                    //Log.e(TAG, nextLine[0]);
                 }
 
 
             } catch (Exception e) {
-                Log.e( TAG, e.toString() );
+                //Log.e( TAG, e.toString() );
 
             }
 
@@ -96,13 +96,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText( getApplicationContext(), "Question created for " ,
                     Toast.LENGTH_SHORT).show();
 
-            Log.d( DEBUG_TAG, "Question saved: " + question );
+            //Log.d( DEBUG_TAG, "Question saved: " + question );
         }
     }
 
     @Override
     protected void onResume() {
-        Log.d( DEBUG_TAG, "MainActivity.onResume()" );
+        //Log.d( DEBUG_TAG, "MainActivity.onResume()" );
         // open the database in onResume
         if(quizData != null)
             quizData.open();
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.d( DEBUG_TAG, "MainActivity.onPause()" );
+        //Log.d( DEBUG_TAG, "MainActivity.onPause()" );
         // close the database in onPause
         if( quizData != null )
             quizData.close();
