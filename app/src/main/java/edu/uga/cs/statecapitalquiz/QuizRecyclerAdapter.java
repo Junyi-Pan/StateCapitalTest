@@ -57,7 +57,7 @@ public class QuizRecyclerAdapter extends RecyclerView.Adapter<QuizRecyclerAdapte
         //Log.d( DEBUG_TAG, "onBindViewHolder: " + score );
 
         holder.date.setText(score.getDate());
-        holder.score.setText(Integer.toString(score.getScore()));
+        holder.score.setText(Integer.toString(score.getScore()) + "/6");
     }
 
     @Override

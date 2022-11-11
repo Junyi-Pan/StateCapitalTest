@@ -48,7 +48,7 @@ public class ResultActivity extends AppCompatActivity {
         quiz = new Score(date, count);
         scores = new QuizData(this);
         scores.open();
-        textView4.setText(Integer.toString(count));
+        textView4.setText(Integer.toString(count) + "/6");
 
     }
 
