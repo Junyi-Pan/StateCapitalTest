@@ -8,84 +8,104 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import java.io.BufferedReader;
+
+import com.opencsv.CSVReader;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
+/**
+ * The main activity class. It just sets listeners for the two buttons.
+ * */
 public class MainActivity extends AppCompatActivity {
-
     public static final String DEBUG_TAG = "MainActivity";
-    private AppData appData;
     final String TAG = "CSVReading";
+
+    private QuizData quizData = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Button start;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        appData = new AppData(this);
-        appData.open();
-        appData.deleteQuestionsTable();
-        new QuestionDBWriter().execute();
-        start = findViewById(R.id.start);
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent( v.getContext(), QuizActivity.class );
-                //intent.putExtra(APP_DATA,appData);
-                startActivity( intent );
-            }
-        });
+        Button buttonStart = findViewById(R.id.start);
+        buttonStart.setOnClickListener(new ButtonClickListener());
+        Button buttonScore = findViewById(R.id.scores);
+        buttonScore.setOnClickListener(new ButtonClickListener());
+        quizData = new QuizData(this);
     }
 
-    public class QuestionDBWriter extends AsyncTask<Question, Question> {
+    private class ButtonClickListener implements View.OnClickListener {
+        Intent intent;
 
-        protected ArrayList<Question> doInBackground( ) {
-            ArrayList<Question> allQuestions = new ArrayList<>();
+        @Override
+        public void onClick(View view) {
+
             try {
-                InputStream in_s = getAssets().open("state_capitals.csv");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in_s));
-                String line = reader.readLine();
-                while((line = reader.readLine()) != null) {
-                    String[] values = line.split(",");
-                    Question newQuestion = new Question();
-                    newQuestion.setState(values[0]);
-                    newQuestion.setCapital(values[1]);
-                    newQuestion.setCity1(values[2]);
-                    newQuestion.setCity2(values[3]);
+                // Open the CSV data file in the assets folder
+                InputStream in_s = getAssets().open("state_capitals.csv" );
 
-                    allQuestions.add(newQuestion);
-                    //System.out.println("NEW QUESTION: " + newQuestion.toString());
-                    appData.storeQuestion(newQuestion);
+                // read the CSV data
+                CSVReader reader = new CSVReader(new InputStreamReader(in_s));
+                String[] nextLine;
+
+                while((nextLine = reader.readNext()) != null ) {
+                    Question row = new Question(nextLine[0],nextLine[1], nextLine[2], nextLine[3]);
+                    new QuestionDBWriter().execute(row);
+                    Log.e(TAG, nextLine[0]);
                 }
 
 
-            }catch (Exception e){
-                Log.e(TAG, e.toString());
+            } catch (Exception e) {
+                Log.e( TAG, e.toString() );
+
             }
 
-            return allQuestions;
+            switch (view.getId()) {
+                case R.id.start:
+                    intent = new Intent(view.getContext(), QuizActivity.class);
+                    break;
+                case R.id.scores:
+                    intent = new Intent(view.getContext(), ScoresActivity.class);
+                    break;
+            }
+            startActivity(intent);
         }
 
+
+    }
+
+    // This is an AsyncTask class (it extends AsyncTask) to perform DB writing of a question, asynchronously.
+    public class QuestionDBWriter extends AsyncTask<Question, Question> {
+
+        // This method will run as a background process to write into db.
+        // It will be automatically invoked by Android, when we call the execute method
+        // in the onClick listener of the Save button.
         @Override
-        protected void onPostExecute( ArrayList<Question> questions ) {
+        protected Question doInBackground(Question... questions) {
+            quizData.storeQuestion(questions[0]);
+            return questions[0];
+        }
+
+        // This method will be automatically called by Android once the writing to the database
+        // in a background process has finished.  Note that doInBackground returns a Question object.
+        // That object will be passed as argument to onPostExecute.
+        // onPostExecute is like the notify method in an asynchronous method call discussed in class.
+        @Override
+        protected void onPostExecute(Question question) {
             // Show a quick confirmation message
-            Toast.makeText( getApplicationContext(), questions.size() + " questions stored.",
+            Toast.makeText( getApplicationContext(), "Question created for " ,
                     Toast.LENGTH_SHORT).show();
 
-
-            Log.d( DEBUG_TAG, questions.size() + " questions stored." );
+            Log.d( DEBUG_TAG, "Question saved: " + question );
         }
-
     }
 
     @Override
     protected void onResume() {
         Log.d( DEBUG_TAG, "MainActivity.onResume()" );
         // open the database in onResume
-        if( appData != null )
-            appData.open();
+        if(quizData != null)
+            quizData.open();
         super.onResume();
     }
 
@@ -93,39 +113,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         Log.d( DEBUG_TAG, "MainActivity.onPause()" );
         // close the database in onPause
-        if( appData != null )
-            appData.close();
+        if( quizData != null )
+            quizData.close();
         super.onPause();
     }
-
-    // The following activity callback methods are not needed and are for
-    // educational purposes only.
-    @Override
-    protected void onStart() {
-        Log.d( DEBUG_TAG, "MainActivity.onStart()" );
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        Log.d( DEBUG_TAG, "MainActivity.onStop()" );
-        super.onStop();
-
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.d( DEBUG_TAG, "MainActivity.onDestroy()" );
-        super.onDestroy();
-
-    }
-
-    @Override
-    protected void onRestart() {
-        Log.d( DEBUG_TAG, "MainActivity.onRestart()" );
-        super.onRestart();
-    }
-
-
 }

@@ -1,73 +1,125 @@
 package edu.uga.cs.statecapitalquiz;
 
-import java.util.Random;
-
+import android.content.Intent;
 import android.os.Bundle;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
+/**
+ * This class is used for the quiz portion of this app.
+ * */
 public class QuizActivity extends AppCompatActivity {
-
-    private static final String TAG = "QuizActivity";
-
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
     ActionBar mActionBar;
-
-    public ArrayList<Integer> getRandomQuestions(){
-
-        ArrayList<Integer> toReturn = new ArrayList<>();
-        Random randomGenerator = new Random();
-        int randomInt = randomGenerator.nextInt(50) + 1;
-        toReturn.add(randomInt);
-
-        while(toReturn.size() < 6){
-            randomInt = randomGenerator.nextInt(50) + 1;
-            if(!toReturn.contains(randomInt))
-                toReturn.add(randomInt);
-        }
-        return toReturn;
-    }
+    public final static Question [] questionArr = new Question[5];
+    ArrayList<String> arrayList = new ArrayList<>();
+    public static ArrayList<Integer> questionNum = new ArrayList<>();
+    public static int [] questionAnswers = new int[5];
+    private QuizData quizData = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.quiz_layout);
+        setContentView(R.layout.activity_quiz);
+        quizData = new QuizData( this );
+        quizData.open();
+        int count=0;
+        while(questionNum.size()<5){
+            Random randomGenerator = new Random();
+            int random_int = randomGenerator.nextInt(50) + 1;
+            if(!(questionNum.contains(random_int))){
+                questionArr[count]=quizData.retrieveAllQuestions().get(random_int);
+                questionNum.add(random_int);
+                count++;
+            }
+
+        }
 
         mActionBar = getSupportActionBar();
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), 6);
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), 5);
         mActionBar.setTitle(mSectionsPagerAdapter.getPageTitle(0));
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mActionBar.setTitle(mSectionsPagerAdapter.getPageTitle(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
-    public void loadView(TextView textView, String state,
-                         RadioButton Capital, String capital,
-                         RadioButton City1, String city1,
-                         RadioButton City2, String city2) {
-        textView.setText(state);
-        Capital.setText(capital);
-        City1.setText(city1);
-        City2.setText(city2);
+    // Check radio button input
+    public boolean checkAnswers(TextView questions, int question ,RadioGroup radioGroup) {
+        if (radioGroup.getCheckedRadioButtonId() == -1)
+        {
+            return false;
+        }
+        else
+        {
+            int radioButtonID = radioGroup.getCheckedRadioButtonId();
+
+            RadioButton radioButton = (RadioButton) radioGroup.findViewById(radioButtonID);
+
+            String selectedText = (String) radioButton.getText();
+
+            if(selectedText.matches(questionArr[question].getCapital()))
+            {
+                questionAnswers[question] = 1;
+            }
+            else
+            {
+                questionAnswers[question] = 0;
+            }
+            Intent reg = new
+                    Intent(getApplicationContext(), ResultActivity.class);
+            startActivity(reg);
+            return true;
+        }
     }
+
+    public void loadView(TextView questions, int question ,RadioGroup radioGroup) {
+        //int random_int = (int)Math.floor(Math.random()*(49-1+1)+1);
+        checkAnswers(questions,question ,radioGroup);
+        ArrayList<String> arrayList = new ArrayList<String>();
+        arrayList.add(questionArr[question].getCapital());
+        arrayList.add(questionArr[question].getCity2());
+        arrayList.add(questionArr[question].getCity3());
+        Collections.shuffle(arrayList);
+        questions.setText(questionArr[question].getState());
+        for (int i = 0; i < radioGroup .getChildCount(); i++) {
+            ((RadioButton) radioGroup.getChildAt(i)).setText(arrayList.get(i));
+        }
+    }
+
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
         private final int mSize;
-        private ArrayList<Integer> questions = getRandomQuestions();
-        int counter = -1;
 
         public SectionsPagerAdapter(FragmentManager fm, int size) {
             super(fm);
@@ -76,12 +128,7 @@ public class QuizActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            counter ++;
-            //System.out.println("before counter");
-            //System.out.println("COUNTER: " + counter);
-            //System.out.println("QUESTION INDEX: " + questions.get(counter));
-            return PlaceholderFragment.newInstance(position + 1, questions.get(counter));
-
+            return PlaceholderFragment.newInstance(position + 1);
         }
 
         @Override
@@ -91,34 +138,21 @@ public class QuizActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            int questionNum = position + 1;
-            if(questionNum == 7){
-                return String.valueOf("Quiz Results");
-            }
-            return String.valueOf("Question " + questionNum);
+            int imageNum = position + 1;
+            return String.valueOf("Question " + imageNum);
         }
     }
 
     public static class PlaceholderFragment extends Fragment {
-        private AppData appData = null;
-        private ArrayList<Question> questionsList = new ArrayList<>();
-
         private static final String ARG_SECTION_NUMBER = "section_number";
-        private static final String ARG_Q = "quest";
+        private int mImageNum;
+        private RadioGroup radioGroup;
+        private TextView State;
 
-        private int questionNum;
-        private int questionId;
-        private TextView mTextView;
-        private RadioButton button1;
-        private RadioButton button2;
-        private RadioButton button3;
-
-        public static PlaceholderFragment newInstance(int sectionNumber, int question) {
-
+        public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            args.putInt(ARG_Q, question);
             fragment.setArguments(args);
             return fragment;
         }
@@ -130,67 +164,56 @@ public class QuizActivity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             if (getArguments() != null) {
-                questionNum = getArguments().getInt(ARG_SECTION_NUMBER);
-                questionId = getArguments().getInt(ARG_Q);
-
+                mImageNum = getArguments().getInt(ARG_SECTION_NUMBER);
             } else {
-                questionNum = -1;
+                mImageNum = -1;
             }
-
-            appData = new AppData(getActivity());
-            appData.open();
-            questionsList = appData.retrieveAllQuestions();
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.quiz_pager_layout, container, false);
-            mTextView = (TextView) rootView.findViewById(R.id.section_label);
-            button1 = (RadioButton) rootView.findViewById(R.id.radio1);
-            button2 = (RadioButton) rootView.findViewById(R.id.radio2);
-            button3 = (RadioButton) rootView.findViewById(R.id.radio3);
+            View rootView = inflater.inflate(R.layout.fragment_quiz, container, false);
+            State = (TextView) rootView.findViewById(R.id.section_label);
+            radioGroup = (RadioGroup) rootView.findViewById(R.id.radiogroup);
+
             return rootView;
         }
+
 
         @Override
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            System.out.println("STATE: " + questionsList.get(0).getState());
             if (QuizActivity.class.isInstance(getActivity())) {
-                System.out.println("STATE: " + questionId);
-                System.out.println("STATE: " + questionsList.get(questionId-1).getState());
-                final String state = questionsList.get(questionId-1).getState();
+                final int resId = mImageNum - 1;
+                ((QuizActivity) getActivity()).loadView(State,resId,radioGroup);
+                radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
-                final String capital = questionsList.get(questionId-1).getCapital();
-                final String city1 = questionsList.get(questionId-1).getCity1();
-                final String city2 = questionsList.get(questionId-1).getCity2();
-                ((QuizActivity) getActivity()).loadView(mTextView, state, button1, capital, button2, city1, button3, city2);
-            }
-        }
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        if (checkedId!= -1) {
+                            int radioButtonID = radioGroup.getCheckedRadioButtonId();
+                            RadioButton radioButton = (RadioButton) radioGroup.findViewById(radioButtonID);
+                            String selectedText = (String) radioButton.getText();
+                            if(selectedText.matches(questionArr[resId].getCapital()))
+                            {
+                                questionAnswers[resId] = 1;
+                            }
+                            else
+                            {
+                                questionAnswers[resId] = 0;
+                            }
+                            if(resId==5){
+                                Intent reg = new
+                                        Intent(getActivity(), ResultActivity.class);
+                                startActivity(reg);
+                            }
 
-        @Override
-        public void onResume() {
-            super.onResume();
 
-            // Open the database
-            if (appData != null && !appData.isDBOpen()) {
-                appData.open();
-                Log.d(TAG, "ReviewJobLeadsFragment.onResume(): opening DB");
-            }
+                        } else {
 
-            // Update the app name in the Action Bar to be the same as the app's name
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-        }
-
-        @Override
-        public void onPause() {
-            super.onPause();
-
-            // close the database in onPause
-            if (appData != null) {
-                appData.close();
-                Log.d(TAG, "ReviewJobLeadsFragment.onPause(): closing DB");
+                        }
+                    }
+                });
             }
         }
     }

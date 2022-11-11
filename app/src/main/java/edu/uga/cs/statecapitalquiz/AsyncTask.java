@@ -1,7 +1,5 @@
 package edu.uga.cs.statecapitalquiz;
 
-
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -33,16 +31,19 @@ public abstract class AsyncTask<Param,Result> {
         // The anonymous Runnable class below will execute the method body (doInBackground)
         // in the executor service, which uses a different thread than the main UI thread.
         // Once the result is obtained, the Runnable class will add another Runnable
-        // with the call to onPostExecute with the Result argument to be added to the
+        // with the call to onPostExecute with the ResultActivity argument to be added to the
         // main UI thread.  The main UI thread will update the UI accordingly.
         // Since the Runnable below will execute in a different thread, the main UI thread
         // will not be blocked.
         executor.execute( new Runnable() {
+            /**
+             * This runs the async program
+             * */
             @Override
             public void run() {
 
                 // Run the method body (doInBackground)
-                ArrayList<Question> results = doInBackground(  );
+                Result result = doInBackground( params );
 
                 // Now, pass the result to the main UI thread
                 //
@@ -58,10 +59,13 @@ public abstract class AsyncTask<Param,Result> {
                 // Post the processing of the result of the doInBackground method
                 // on the main UI thread's looper.
                 handler.post( new Runnable() {
+                    /**
+                     * This executes the method result in the main thread
+                     * */
                     @Override
                     public void run() {
-                        // handle the method result in the main UI threa
-                        onPostExecute( results );
+                        // handle the method result in the main UI thread
+                        onPostExecute( result );
                     }
                 });
             }
@@ -74,6 +78,6 @@ public abstract class AsyncTask<Param,Result> {
     }
 
     // These abstract methods are just like in the AsyncTask
-    protected abstract ArrayList<Question> doInBackground(  );
-    protected abstract void onPostExecute( ArrayList<Question> results );
+    protected abstract Result doInBackground( Param... arguments );
+    protected abstract void onPostExecute( Result result );
 }
