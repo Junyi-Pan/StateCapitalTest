@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 // read the CSV data
                 CSVReader reader = new CSVReader(new InputStreamReader(in_s));
                 String[] nextLine;
+                nextLine = reader.readNext();
 
                 while((nextLine = reader.readNext()) != null ) {
                     Question row = new Question(nextLine[0],nextLine[1], nextLine[2], nextLine[3]);
